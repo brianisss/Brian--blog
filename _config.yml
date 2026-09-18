@@ -3,12 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle: ''
-description: ''
-keywords:
-author: John Doe
-language: en
+title: SCHALE Blog
+subtitle: 未來機關
+description: 與未來機關取得弱神經連線時的口令：
+author: SCHALE
+language: zh-TW
 timezone: ''
 
 # URL
