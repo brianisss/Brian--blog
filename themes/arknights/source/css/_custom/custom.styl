@@ -1,0 +1,41 @@
+/* ===== Blue Archive Reskin - Custom Styles ===== */
+/* 這個檔案由 hexo-theme-arknights → Blue Archive 換肤任務新增 */
+/* 不要修改其他核心檔案，所有覆蓋都在這裡 */
+
+/* --- 全域 BA 圓點紋理 --- */
+body::before
+  content ''
+  position fixed
+  top 0
+  left 0
+  width 100%
+  height 100%
+  background-image radial-gradient(circle, rgba(43, 143, 255, 0.06) 1px, transparent 1px)
+  background-size 20px 20px
+  pointer-events none
+  z-index 0
+  opacity 1
+
+/* --- 亮色模式天空漸層背景 --- */
+:root[theme-mode=light] body
+  background-image linear-gradient(180deg, #a8d8ff 0%, #e8f4ff 40%, #ffffff 100%)
+
+/* --- 暗色模式深藍漸層背景 --- */
+:root[theme-mode=dark] body
+  background-image linear-gradient(180deg, #0d1b2a 0%, #1b2a4a 40%, #0d1b2a 100%)
+
+/* --- 全域卡片圓角化 --- */
+article, aside, .card, .recent-post, .post-card, .link-card-wrapper, .post-header, .post-info, #paginator
+  border-radius 16px
+
+/* --- 面板柔和陰影 --- */
+.recent-post, .card, .post-card, article
+  box-shadow 0 4px 24px rgba(43, 143, 255, 0.15)
+
+/* --- 導航列銳利線條（維持原主題特色） --- */
+header
+  border-bottom 2px solid var(--theme-bar-color-0)
+
+/* --- 搜尋框圓角 --- */
+.search-container input, .search-input
+  border-radius 20px
