@@ -83,26 +83,3 @@
       transform translate(0, -50%) translateX(-300%)
     &:nth-child(3)
       transform translate(0, -50%) rotate(-45deg) scaleX(1.2)
-.i-next
-  &:before
-    content '⏭'
-    font-size 18px
-  @media (min-width: 769px)
-    &:hover
-      line-height 30px
-.i-prev
-  &:before
-    content '⏮'
-    font-size 18px
-  @media (min-width: 769px)
-    &:hover
-      line-height 30px
-.i-loop
-  &:before
-    content '🔁'
-    font-size 18px
-  &.active
-    color var(--theme-highlight)
-  @media (min-width: 769px)
-    &:hover
-      line-height 30px
