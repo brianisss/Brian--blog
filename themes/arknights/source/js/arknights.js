@@ -33,7 +33,6 @@ function initBgmPlaylist() {
     const audioElements = playlist.map((src, i) => {
         const audio = document.createElement('audio');
         audio.src = src;
-        audio.crossOrigin = 'anonymous';
         return audio;
     });
     

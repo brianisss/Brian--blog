@@ -20,4 +20,4 @@
         a#bgm-prev.i-prev(onclick="BgmPrev()" title="上一首")
       if theme.bgm && theme.bgm.loop !== false
         a#bgm-loop.i-loop(onclick="BgmToggleLoop()" title="重複")
-        audio(id='bgm' src=theme.bgm.src autoplay=theme.bgm.autoplay loop=theme.bgm.loop crossorigin='anonymous')
+  audio(id='bgm' src=theme.bgm.src autoplay=theme.bgm.autoplay loop=theme.bgm.loop)
