@@ -54,6 +54,7 @@ html(lang=config.language theme-mode=htmlThemeMode)
       include ./aside.pug
     if theme.canvas_dust
       canvas#canvas-dust
+    .halo-deco(style="opacity: 0;")
 
     if theme.scripts && theme.scripts.length > 0
       //- scripts list from config.yml

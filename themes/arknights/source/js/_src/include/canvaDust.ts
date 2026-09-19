@@ -22,7 +22,7 @@ class dust {
 class canvasDust {
   private readonly canvas: HTMLCanvasElement
   private readonly ctx: CanvasRenderingContext2D
-  public color: string = '#fff'
+  public color: string = 'rgba(43, 143, 255, 0.5)'
   public width: number = 300
   public height: number = 300
   private dustQuantity: number = 50

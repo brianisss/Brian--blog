@@ -8,11 +8,11 @@ const path = require('path');
 const log = hexo.log;
 
 const defaultConfig = {
-  'abstract': 'Here\'s something encrypted, password is required to continue reading.',
-  'message': 'Hey, password is required here.',
+  'abstract': '與 SCHALE 取得安全連線需要通行碼',
+  'message': '請輸入與 SCHALE 連線的通行碼：',
   'theme': 'default',
-  'wrong_pass_message': 'Oh, this is an invalid password. Check and try again, please.',
-  'wrong_hash_message': 'OOPS, these decrypted content may changed, but you can still have a look.',
+  'wrong_pass_message': '與 SCHALE 驗證通行碼失敗，請重試。',
+  'wrong_hash_message': 'OOPS，解密內容可能已變更，你仍可查看。',
   'silent': false,
 };
 

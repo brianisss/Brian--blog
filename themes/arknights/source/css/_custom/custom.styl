@@ -2,7 +2,9 @@
 /* 這個檔案由 hexo-theme-arknights → Blue Archive 換肤任務新增 */
 /* 不要修改其他核心檔案，所有覆蓋都在這裡 */
 
-/* --- 全域 BA 圓點紋理 --- */
+/* =====================================================
+   1. 全域 BA 雙層半調圓點紋理
+   ===================================================== */
 body::before
   content ''
   position fixed
@@ -10,32 +12,210 @@ body::before
   left 0
   width 100%
   height 100%
-  background-image radial-gradient(circle, rgba(43, 143, 255, 0.06) 1px, transparent 1px)
+  /* 底層大圓點 */
+  background-image radial-gradient(circle, rgba(43, 143, 255, 0.05) 1px, transparent 1px)
   background-size 20px 20px
   pointer-events none
   z-index 0
   opacity 1
 
-/* --- 亮色模式天空漸層背景 --- */
+/* 上層小圓點 — BA 海報印刷網點感 */
+body::after
+  content ''
+  position fixed
+  top 0
+  left 0
+  width 100%
+  height 100%
+  background-image radial-gradient(circle, rgba(255, 216, 77, 0.04) 0.5px, transparent 0.5px)
+  background-size 10px 10px
+  pointer-events none
+  z-index 0
+  opacity 1
+
+/* =====================================================
+   2. BA 光環裝飾 — ::before 挪到 .halo-deco
+   ===================================================== */
+.halo-deco
+  content ''
+  position fixed
+  top 40px
+  right 60px
+  width 220px
+  height 70px
+  border 3px solid rgba(43, 143, 255, 0.35)
+  border-radius 50%
+  pointer-events none
+  z-index 0
+  animation haloFloat 6s ease-in-out infinite, haloGlow 6s ease-in-out infinite
+
+@keyframes haloFloat
+  0%, 100%
+    transform translateY(0)
+  50%
+    transform translateY(-10px)
+
+@keyframes haloGlow
+  0%, 100%
+    box-shadow 0 0 12px rgba(43, 143, 255, 0.2), 0 0 24px rgba(43, 143, 255, 0.08)
+  50%
+    box-shadow 0 0 20px rgba(43, 143, 255, 0.4), 0 0 40px rgba(43, 143, 255, 0.15)
+
+@media (max-width: 769px)
+  .halo-deco
+    display none
+
+/* =====================================================
+   3. MomoTalk 對話框風格 blockquote
+   ===================================================== */
+blockquote
+  margin 16px 0
+  padding 14px 20px
+  border-left none
+  background #ffffff
+  border-radius 18px
+  box-shadow 0 2px 12px rgba(43, 143, 255, 0.12)
+  position relative
+  color inherit
+
+  /* 天空藍尾巴 */
+  &::before
+    content ''
+    position absolute
+    top 0
+    left -8px
+    width 8px
+    height 100%
+    background #2b8fff
+    border-radius 18px 0 0 18px
+
+  cite
+    font-weight 500
+
+  /* 巢狀 blockquote → 回覆氣泡（右對齊） */
+  blockquote
+    background #f0f6ff
+    margin 8px 20px 8px 0
+    padding 10px 16px
+    border-radius 18px 18px 4px 18px
+    align-self flex-end
+    max-width 85%
+    box-shadow 0 1px 8px rgba(43, 143, 255, 0.08)
+
+    &::before
+      display none
+
+    cite
+      display block
+      text-align right
+      font-weight 400
+      color #6a8cba
+
+/* =====================================================
+   4. BA 風格按鈕 — 膠囊形 + 漸層
+   ===================================================== */
+.bottom-btn,
+.read-more,
+.btn,
+button,
+.button,
+#paginator a,
+.tag a,
+.link-card-btn,
+.btn-readmore
+  border-radius 999px !important
+  background linear-gradient(135deg, #3b9eff, #2b8fff) !important
+  color #fff !important
+  border none !important
+  display inline-block
+  transition transform 0.25s, box-shadow 0.25s
+
+  &:hover
+    transform translateY(-2px)
+    box-shadow 0 6px 20px rgba(43, 143, 255, 0.35)
+
+/* =====================================================
+   5. 卡片浮起效果
+   ===================================================== */
+.recent-post, .post-card, .card, .link-card-wrapper, article
+  transition transform 0.3s ease, box-shadow 0.3s ease
+
+  &:hover
+    transform translateY(-4px)
+    box-shadow 0 8px 32px rgba(43, 143, 255, 0.25)
+
+/* =====================================================
+   6. 捲軸美化
+   ===================================================== */
+@media (min-width: 769px)
+  ::-webkit-scrollbar
+    width 10px
+    height 10px
+  ::-webkit-scrollbar-thumb
+    background linear-gradient(180deg, #3b9eff, #2b8fff)
+    border-radius 5px
+  ::-webkit-scrollbar-track
+    background #e3eefb
+  ::-webkit-scrollbar-thumb:hover
+    background linear-gradient(180deg, #2b8fff, #1a6fd4)
+  /* 覆蓋原 scrollbar 設定 */
+  main
+    scrollbar-color var(--theme-bar-color-0) var(--theme-bar-color-2)
+    scrollbar-width thin
+
+/* =====================================================
+   7. 選取文字顏色
+   ===================================================== */
+::selection
+  background #2b8fff
+  color #ffffff
+
+::-moz-selection
+  background #2b8fff
+  color #ffffff
+
+/* =====================================================
+   8. 標籤膠囊化
+   ===================================================== */
+.tag a,
+a.tag,
+.tag-link,
+.post-tag
+  border-radius 999px !important
+  padding 2px 14px !important
+
+/* =====================================================
+   9. 亮色模式天空漸層背景
+   ===================================================== */
 :root[theme-mode=light] body
   background-image linear-gradient(180deg, #a8d8ff 0%, #e8f4ff 40%, #ffffff 100%)
 
-/* --- 暗色模式深藍漸層背景 --- */
+/* =====================================================
+   10. 暗色模式深藍漸層背景
+   ===================================================== */
 :root[theme-mode=dark] body
   background-image linear-gradient(180deg, #0d1b2a 0%, #1b2a4a 40%, #0d1b2a 100%)
 
-/* --- 全域卡片圓角化 --- */
+/* =====================================================
+   11. 全域卡片圓角化
+   ===================================================== */
 article, aside, .card, .recent-post, .post-card, .link-card-wrapper, .post-header, .post-info, #paginator
   border-radius 16px
 
-/* --- 面板柔和陰影 --- */
+/* =====================================================
+   12. 面板柔和陰影
+   ===================================================== */
 .recent-post, .card, .post-card, article
   box-shadow 0 4px 24px rgba(43, 143, 255, 0.15)
 
-/* --- 導航列銳利線條（維持原主題特色） --- */
+/* =====================================================
+   13. 導航列銳利線條（維持原主題特色）
+   ===================================================== */
 header
   border-bottom 2px solid var(--theme-bar-color-0)
 
-/* --- 搜尋框圓角 --- */
+/* =====================================================
+   14. 搜尋框圓角
+   ===================================================== */
 .search-container input, .search-input
   border-radius 20px

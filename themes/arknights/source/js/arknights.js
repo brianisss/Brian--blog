@@ -199,7 +199,7 @@ class dust {
 class canvasDust {
     canvas;
     ctx;
-    color = '#fff';
+    color = 'rgba(43, 143, 255, 0.5)';
     width = 300;
     height = 300;
     dustQuantity = 50;
