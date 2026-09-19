@@ -13,6 +13,42 @@ function BgmControl() {
         control.style.transform = "scaleY(.5)";
     }
 }
+// ===== BA 隨機播放功能 =====
+function initBgmPlaylist() {
+    const audioElements = document.querySelectorAll('audio[src]');
+    if (audioElements.length <= 1) return; // 只有一首或多於一首但有 id='bgm' 就不啟用
+    
+    const songs = Array.from(audioElements).map(a => a.src);
+    let currentIndex = Math.floor(Math.random() * songs.length);
+    
+    // 設定第一個 audio 元素為主播放來源
+    const mainAudio = audioElements[currentIndex];
+    mainAudio.id = 'bgm';
+    mainAudio.play();
+    
+    document.getElementById("bgm-control").setAttribute("fill", "#18d1ff");
+    
+    // 當一首歌播完，隨機換下一首
+    mainAudio.addEventListener('ended', () => {
+        let nextIndex;
+        do {
+            nextIndex = Math.floor(Math.random() * songs.length);
+        } while (nextIndex === currentIndex && songs.length > 1);
+        currentIndex = nextIndex;
+        
+        const nextAudio = Array.from(audioElements)[currentIndex];
+        nextAudio.id = 'bgm';
+        nextAudio.play();
+        document.getElementById("bgm-control").setAttribute("fill", "#18d1ff");
+    });
+    
+    // 更新 BgmControl 以支援多軌道切換
+    window._bgmAudioElements = audioElements;
+}
+// 頁面載入後初始化
+document.addEventListener('DOMContentLoaded', initBgmPlaylist);
+// PJAX 切換後也要重新初始化
+document.addEventListener('pjax:success', initBgmPlaylist);
 function getElement(string, item = document.documentElement) {
     let tmp = item.querySelector(string);
     if (tmp === null) {
