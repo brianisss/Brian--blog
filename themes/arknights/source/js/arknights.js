@@ -15,35 +15,84 @@ function BgmControl() {
 }
 // ===== BA 隨機播放功能 =====
 function initBgmPlaylist() {
-    const audioElements = document.querySelectorAll('audio[src]');
-    if (audioElements.length <= 1) return; // 只有一首或多於一首但有 id='bgm' 就不啟用
+    const playlist = config.bgm && config.bgm.playlist;
     
-    const songs = Array.from(audioElements).map(a => a.src);
-    let currentIndex = Math.floor(Math.random() * songs.length);
+    if (!playlist || playlist.length === 0) return; // 無播放清單，不啟用隨機
     
-    // 設定第一個 audio 元素為主播放來源
-    const mainAudio = audioElements[currentIndex];
-    mainAudio.id = 'bgm';
-    mainAudio.play();
+    // 清除舊的 ended 監聽器
+    const oldAudio = document.getElementById('bgm');
+    if (oldAudio) {
+        oldAudio.removeEventListener('ended', oldAudio._bgmEndedHandler);
+        oldAudio.remove();
+    }
     
-    document.getElementById("bgm-control").setAttribute("fill", "#18d1ff");
+    // 動態建立 audio 元素
+    const container = document.querySelector('.bottom-btn div');
+    if (!container) return;
     
-    // 當一首歌播完，隨機換下一首
-    mainAudio.addEventListener('ended', () => {
-        let nextIndex;
-        do {
-            nextIndex = Math.floor(Math.random() * songs.length);
-        } while (nextIndex === currentIndex && songs.length > 1);
-        currentIndex = nextIndex;
-        
-        const nextAudio = Array.from(audioElements)[currentIndex];
-        nextAudio.id = 'bgm';
-        nextAudio.play();
-        document.getElementById("bgm-control").setAttribute("fill", "#18d1ff");
+    const audioElements = playlist.map((src, i) => {
+        const audio = document.createElement('audio');
+        audio.src = src;
+        audio.crossOrigin = 'anonymous';
+        // 預設為無 ID，讓 initBgmPlaylist 隨機選一首加 id
+        return audio;
     });
     
-    // 更新 BgmControl 以支援多軌道切換
+    // 將 audio 元素加入 DOM
+    audioElements.forEach(a => container.appendChild(a));
+    
+    // 隨機選一首
+    let currentIndex = Math.floor(Math.random() * audioElements.length);
+    let mainAudio = audioElements[currentIndex];
+    mainAudio.id = 'bgm';
+    mainAudio.play().catch(() => {}); // 忽略自動播放 blocked
+    
+    // 更新 BgmControl 視覺
+    const control = document.getElementById("bgm-control");
+    if (control) control.setAttribute("fill", "#18d1ff");
+    
+    // 保存元素陣列供 BgmControl 用
     window._bgmAudioElements = audioElements;
+    
+    // 當一首歌播完，隨機換下一首
+    mainAudio._bgmEndedHandler = () => {
+        let nextIndex;
+        do {
+            nextIndex = Math.floor(Math.random() * audioElements.length);
+        } while (nextIndex === currentIndex && audioElements.length > 1);
+        currentIndex = nextIndex;
+        
+        const prevAudio = mainAudio;
+        mainAudio = audioElements[currentIndex];
+        mainAudio.id = 'bgm';
+        mainAudio.play().catch(() => {});
+        
+        if (control) control.setAttribute("fill", "#18d1ff");
+        
+        // 移除舊 audio 的監聽器
+        if (prevAudio) {
+            prevAudio.removeEventListener('ended', prevAudio._bgmEndedHandler);
+        }
+    };
+    
+    // 註冊 ended 監聽
+    mainAudio.addEventListener('ended', mainAudio._bgmEndedHandler);
+    
+    // 更新 BgmControl 函數，支援多軌道切換
+    window.BgmControl = function() {
+        const bgm = document.getElementById('bgm');
+        if (!bgm) return;
+        const ctrl = document.getElementById("bgm-control");
+        if (bgm.paused) {
+            bgm.play().catch(() => {});
+            if (ctrl) ctrl.setAttribute("fill", "#18d1ff");
+            if (ctrl) ctrl.style.transform = "scaleY(1)";
+        } else {
+            bgm.pause();
+            if (ctrl) ctrl.setAttribute("fill", "currentColor");
+            if (ctrl) ctrl.style.transform = "scaleY(.5)";
+        }
+    };
 }
 // 頁面載入後初始化
 document.addEventListener('DOMContentLoaded', initBgmPlaylist);

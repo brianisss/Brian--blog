@@ -12,6 +12,13 @@
   const pjax = theme.pjax ? theme.pjax.enable : false
   let searchConfig = null
   if (theme.search !== undefined && theme.search.enable === true) searchConfig = theme.search;
+  const bgmConfig = JSON.stringify({
+    enable: theme.bgm && theme.bgm.enable,
+    autoplay: theme.bgm && theme.bgm.autoplay,
+    loop: theme.bgm && theme.bgm.loop,
+    src: theme.bgm && theme.bgm.src,
+    playlist: (theme.bgm && theme.bgm.playlist && theme.bgm.playlist.length > 0) ? theme.bgm.playlist : null
+  })
   const configs = JSON.stringify({
     root: config.root,
     code_fold: config.theme_config.post.code_fold,
@@ -24,7 +31,8 @@
     code: {
       codeInfo: __('code.codeInfo'),
       copy: __('code.copy')
-    }
+    },
+    bgm: JSON.parse(bgmConfig)
   })
 
   let htmlThemeMode = theme.color

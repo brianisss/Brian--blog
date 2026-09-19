@@ -97,7 +97,7 @@ bgm:
   autoplay: true
   loop: true
   src: /audio/bgm.mp3 # 預設音檔（不設 playlist 時使用）
-  playlist: [] # 隨機播放：填入多首 mp3 路徑，例：[/audio/song1.mp3, /audio/song2.mp3, /audio/song3.mp3]
+  playlist: [/audio/test-song-a.mp3, /audio/test-song-b.mp3, /audio/test-song-c.mp3]
 
 # Vercount
 # 详见 https://vercount.one/
