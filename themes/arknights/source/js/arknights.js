@@ -34,7 +34,6 @@ function initBgmPlaylist() {
         const audio = document.createElement('audio');
         audio.src = src;
         audio.crossOrigin = 'anonymous';
-        // 預設為無 ID，讓 initBgmPlaylist 隨機選一首加 id
         return audio;
     });
     
@@ -45,38 +44,151 @@ function initBgmPlaylist() {
     let currentIndex = Math.floor(Math.random() * audioElements.length);
     let mainAudio = audioElements[currentIndex];
     mainAudio.id = 'bgm';
-    mainAudio.play().catch(() => {}); // 忽略自動播放 blocked
+    mainAudio.volume = 0.5;
+    mainAudio.play().catch(() => {});
     
     // 更新 BgmControl 視覺
     const control = document.getElementById("bgm-control");
     if (control) control.setAttribute("fill", "#18d1ff");
     
+    // 淡入淡出切換
+    const FADE_DURATION = 1000;
+    let fadeOutTimer = null;
+    
+    function fadeOut(audio, callback) {
+        if (fadeOutTimer) { clearTimeout(fadeOutTimer); fadeOutTimer = null; }
+        const step = () => {
+            if (audio.volume > 0.01) {
+                audio.volume = Math.max(0, audio.volume - 0.05);
+                requestAnimationFrame(step);
+            } else {
+                audio.volume = 0;
+                if (callback) callback();
+            }
+        };
+        requestAnimationFrame(step);
+    }
+    
+    function fadeIn(audio, callback) {
+        const step = () => {
+            if (audio.volume < 0.5) {
+                audio.volume = Math.min(0.5, audio.volume + 0.05);
+                requestAnimationFrame(step);
+            } else {
+                audio.volume = 0.5;
+                if (callback) callback();
+            }
+        };
+        requestAnimationFrame(step);
+    }
+    
+    function switchTo(index, withFade = true) {
+        if (index === currentIndex && mainAudio && !mainAudio.paused) return;
+        const prevAudio = mainAudio;
+        currentIndex = index;
+        mainAudio = audioElements[currentIndex];
+        mainAudio.id = 'bgm';
+        
+        // 先設 volume=0 避免跳躍
+        mainAudio.volume = 0;
+        
+        if (withFade && prevAudio && prevAudio.id) {
+            // 淡出舊的 + 淡入新的交叉切換
+            fadeOut(prevAudio, () => {
+                mainAudio.play().catch(() => {});
+                fadeIn(mainAudio, () => {
+                    if (control) control.setAttribute("fill", "#18d1ff");
+                });
+            });
+        } else {
+            mainAudio.play().catch(() => {});
+            fadeIn(mainAudio, () => {
+                if (control) control.setAttribute("fill", "#18d1ff");
+            });
+        }
+        
+        if (prevAudio && prevAudio.id) {
+            prevAudio.removeEventListener('ended', prevAudio._bgmEndedHandler);
+            prevAudio.id = '';
+        }
+    }
+    
+    // 換歌時脈衝動畫
+    function pulseControl() {
+        if (!control) return;
+        control.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        control.style.transform = 'scale(1.3)';
+        setTimeout(() => {
+            control.style.transform = 'scale(1)';
+            control.style.transition = 'transform 0.3s';
+        }, 300);
+    }
+    
     // 保存元素陣列供 BgmControl 用
     window._bgmAudioElements = audioElements;
+    window._bgmState = { currentIndex, audioElements, switchTo };
     
     // 當一首歌播完，隨機換下一首
     mainAudio._bgmEndedHandler = () => {
+        // 隨機選一首（不重複當前）
         let nextIndex;
         do {
             nextIndex = Math.floor(Math.random() * audioElements.length);
         } while (nextIndex === currentIndex && audioElements.length > 1);
-        currentIndex = nextIndex;
         
-        const prevAudio = mainAudio;
-        mainAudio = audioElements[currentIndex];
-        mainAudio.id = 'bgm';
-        mainAudio.play().catch(() => {});
-        
-        if (control) control.setAttribute("fill", "#18d1ff");
-        
-        // 移除舊 audio 的監聽器
-        if (prevAudio) {
-            prevAudio.removeEventListener('ended', prevAudio._bgmEndedHandler);
-        }
+        switchTo(nextIndex);
+        pulseControl();
     };
     
     // 註冊 ended 監聽
     mainAudio.addEventListener('ended', mainAudio._bgmEndedHandler);
+    
+    // 下一首
+    window.BgmNext = function() {
+        let nextIndex = (currentIndex + 1) % audioElements.length;
+        switchTo(nextIndex);
+        pulseControl();
+    };
+    
+    // 上一首
+    window.BgmPrev = function() {
+        let prevIndex = (currentIndex - 1 + audioElements.length) % audioElements.length;
+        switchTo(prevIndex);
+        pulseControl();
+    };
+    
+    // 重複切換
+    window.BgmToggleLoop = function() {
+        const loopBtn = document.getElementById('bgm-loop');
+        if (!loopBtn) return;
+        const isLoop = loopBtn.classList.contains('active');
+        if (isLoop) {
+            // 關重複 → 改為順序播放
+            loopBtn.classList.remove('active');
+            loopBtn.setAttribute('title', '順序');
+            mainAudio.removeEventListener('ended', mainAudio._bgmEndedHandler);
+            mainAudio._bgmEndedHandler = () => {
+                let nextIndex = (currentIndex + 1) % audioElements.length;
+                switchTo(nextIndex);
+                pulseControl();
+            };
+            mainAudio.addEventListener('ended', mainAudio._bgmEndedHandler);
+        } else {
+            // 開重複 → 隨機播放
+            loopBtn.classList.add('active');
+            loopBtn.setAttribute('title', '隨機');
+            mainAudio.removeEventListener('ended', mainAudio._bgmEndedHandler);
+            mainAudio._bgmEndedHandler = () => {
+                let nextIndex;
+                do {
+                    nextIndex = Math.floor(Math.random() * audioElements.length);
+                } while (nextIndex === currentIndex && audioElements.length > 1);
+                switchTo(nextIndex);
+                pulseControl();
+            };
+            mainAudio.addEventListener('ended', mainAudio._bgmEndedHandler);
+        }
+    };
     
     // 更新 BgmControl 函數，支援多軌道切換
     window.BgmControl = function() {
@@ -84,6 +196,7 @@ function initBgmPlaylist() {
         if (!bgm) return;
         const ctrl = document.getElementById("bgm-control");
         if (bgm.paused) {
+            bgm.volume = 0.5;
             bgm.play().catch(() => {});
             if (ctrl) ctrl.setAttribute("fill", "#18d1ff");
             if (ctrl) ctrl.style.transform = "scaleY(1)";

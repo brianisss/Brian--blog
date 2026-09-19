@@ -33,16 +33,16 @@
       bottom 40px
     &:nth-last-child(3)
       bottom 80px
-    @media ( min-width 769px )
+    @media ( min-width: 769px )
       &:hover
         background-color var(--theme-subcolor)
         color var(--theme-text-hover)
-@media ( min-width 769px )
+@media ( min-width: 769px )
   .i-top:hover
     line-height 30px
 .i-color
   display flex
-  @media ( min-width 769px )
+  @media ( min-width: 769px )
     &:hover
       line-height 40px
       &::after
@@ -55,8 +55,7 @@
     display inline-block
     border 4px solid var(--theme-bg-light)
     border-radius 50%
-    background linear-gradient(45deg, transparent 10px,
-      var(--theme-bg-light) 12px, var(--theme-bg-light))
+    background linear-gradient(45deg, transparent 10px, var(--theme-bg-light) 12px, var(--theme-bg-light))
     transition transform .3s, filter .3s
 .i-index
   .tocBtnIconBar
@@ -84,3 +83,26 @@
       transform translate(0, -50%) translateX(-300%)
     &:nth-child(3)
       transform translate(0, -50%) rotate(-45deg) scaleX(1.2)
+.i-next
+  &:before
+    content '⏭'
+    font-size 18px
+  @media (min-width: 769px)
+    &:hover
+      line-height 30px
+.i-prev
+  &:before
+    content '⏮'
+    font-size 18px
+  @media (min-width: 769px)
+    &:hover
+      line-height 30px
+.i-loop
+  &:before
+    content '🔁'
+    font-size 18px
+  &.active
+    color var(--theme-highlight)
+  @media (min-width: 769px)
+    &:hover
+      line-height 30px

@@ -6,3 +6,7 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+themes/arknights/source/audio/*.mp3
+themes/arknights/source/audio/*.flac
+themes/arknights/source/audio/*.ogg
+themes/arknights/source/audio/*.wav
