@@ -677,44 +677,45 @@ class ColorMode {
     };
     change = () => {
         this.inChanging = true;
-        let background = document.createElement('div');
-        background.style.transition = '1.5s';
-        background.innerHTML =
-            `<div style='background: var(--${this.dark ? 'dark' : 'light'}-background);
-        height: 100vh; width: 100vw;
-        position: fixed; left: 0; top: 0; z-index: -99999;
+        this.btn.style.pointerEvents = 'none';
+        if (canvasDusts)
+            canvasDusts.stop();
+        let bgStyle = `background: var(--body-background);
+        background-color: var(--theme-background);
         background-attachment: fixed;
         background-position: 50% 0;
         background-repeat: no-repeat;
-        background-size: cover;'></div>`;
-        document.body.insertBefore(background, document.body.firstChild);
-        this.btn.style.pointerEvents = 'none';
-        setTimeout(() => {
-            if (canvasDusts)
-                canvasDusts.stop();
-            if (this.dark) {
-                this.html.setAttribute('theme-mode', 'light');
-                this.dark = false;
-                window.localStorage['theme-mode'] = 'light';
-            }
-            else {
-                this.html.setAttribute('theme-mode', 'dark');
-                this.dark = true;
-                window.localStorage['theme-mode'] = 'dark';
-            }
-            background.style.opacity = '0';
-            code.resetMermaid();
-            this.syncGiscusTheme();
+        background-size: cover;
+        height: 100vh; width: 100vw;
+        position: fixed; left: 0; top: 0; z-index: -99999;
+        transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);`;
+        let overlay = document.createElement('div');
+        overlay.style.cssText = bgStyle;
+        document.body.insertBefore(overlay, document.body.firstChild);
+        // 立即切換模式 — 讓 overlay 的 CSS 變數自動更新為新模式
+        if (this.dark) {
+            this.html.setAttribute('theme-mode', 'light');
+            this.dark = false;
+            window.localStorage['theme-mode'] = 'light';
+        }
+        else {
+            this.html.setAttribute('theme-mode', 'dark');
+            this.dark = true;
+            window.localStorage['theme-mode'] = 'dark';
+        }
+        // 淡出 overlay
+        requestAnimationFrame(() => {
+            overlay.style.opacity = '0';
         });
+        code.resetMermaid();
+        this.syncGiscusTheme();
         setTimeout(() => {
-            document.body.removeChild(background);
+            document.body.removeChild(overlay);
             if (canvasDusts)
                 canvasDusts.play();
-        }, 1500);
-        setTimeout(() => {
             this.btn.style.pointerEvents = '';
             this.inChanging = false;
-        }, 1000);
+        }, 1300);
     };
     constructor() {
         document.addEventListener('keypress', (ev) => {
