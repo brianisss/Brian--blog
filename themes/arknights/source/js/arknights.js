@@ -1,14 +1,60 @@
 "use strict";
+// ===== BGM 多首播放清單 =====
+var BGM_SONGS = [
+    "/audio/title1.mp3",
+    "/audio/title2.mp3",
+    "/audio/title3.mp3"
+];
+var bgmIndex = 0;
+
+// 頁面載入後初始化 BGM 多首播放
+function _initBgmPlaylist() {
+    var bgm = document.getElementById('bgm');
+    if (!bgm) return;
+    if (BGM_SONGS.length > 1) {
+        bgm.src = BGM_SONGS[0];
+        bgmIndex = 0;
+        bgm.onended = function() {
+            bgmIndex = (bgmIndex + 1) % BGM_SONGS.length;
+            bgm.src = BGM_SONGS[bgmIndex];
+            bgm.play().catch(function() {});
+        };
+    }
+}
+
+// PJAX 切換後重新初始化
+document.addEventListener('pjax:success', _initBgmPlaylist);
+// 頁面載入時初始化
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('bgm')) {
+        _initBgmPlaylist();
+    }
+});
+
 function BgmControl() {
-    const bgm = document.getElementById('bgm');
-    const control = document.getElementById("bgm-control");
+    var bgm = document.getElementById('bgm');
+    var control = document.getElementById("bgm-control");
+    if (!bgm) return;
     if (bgm.paused) {
-        bgm.play();
+        // 清除舊監聽器避免重複綁定
+        bgm.onended = null;
+        bgm.play().catch(function() {});
+        // 播放時重新綁定 ended
+        if (BGM_SONGS.length > 1) {
+            var _idx = bgmIndex;
+            bgm.onended = function() {
+                _idx = (_idx + 1) % BGM_SONGS.length;
+                bgmIndex = _idx;
+                bgm.src = BGM_SONGS[_idx];
+                bgm.play().catch(function() {});
+            };
+        }
         control.setAttribute("fill", "#18d1ff");
         control.style.transform = "scaleY(1)";
     }
     else {
         bgm.pause();
+        bgm.onended = null;
         control.setAttribute("fill", "currentColor");
         control.style.transform = "scaleY(.5)";
     }
