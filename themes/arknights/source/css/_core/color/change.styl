@@ -35,7 +35,24 @@
 
 #post-bg,
 h1, h2, h3, h4, h5, h6
-  transition 1s
+  transition 1s cubic-bezier(0.4, 0, 0.2, 1)
+  will-change transform, opacity
+
+@keyframes pjax-animate-in
+  0%
+    opacity 0
+    transform translateY(10px)
+  100%
+    opacity 1
+    transform translateY(0)
+
+@keyframes pjax-animate-out
+  0%
+    opacity 1
+    transform translateY(0)
+  100%
+    opacity 0
+    transform translateY(-10px)
 
 @property --theme-bg-trans1
   syntax '<color>'
@@ -43,4 +60,5 @@ h1, h2, h3, h4, h5, h6
   initial-value #fff
 
 #aside-block
-  transition --theme-bg-trans1 1s
+  transition --theme-bg-trans1 1s cubic-bezier(0.4, 0, 0.2, 1)
+  will-change transform, opacity
