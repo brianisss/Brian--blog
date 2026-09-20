@@ -51,17 +51,15 @@
 
 ### 隨機播放（最新）
 - `_config.arknights.yml`：新增 `playlist: []` 欄位
-- `layout.pug`：`config.bgm` 注入 playlist JSON（含 enable, autoplay, loop, src, playlist）
-- `bottom-btn.pug`：保持單一 `<audio id='bgm'>` 標籤（不渲染 playlist，改由 JS 動態建立）
-- `arknights.js`：`initBgmPlaylist()` 從 `config.bgm.playlist` 讀取播放清單、清除舊 audio、動態建立多個 `<audio>` 元素、隨機選一首、播完自動換下一首
-- `test-song-a.mp3`(440Hz)、`test-song-b.mp3`(523Hz)、`test-song-c.mp3`(659Hz)：測試音檔
+- `bottom-btn.pug`：支援播放清單渲染
+- `arknights.js`：`initBgmPlaylist()` 函數，隨機選歌、播完自動換下一首
 
 ## 3. 目前狀態
 - 所有視覺換膚已完成
-- 隨機播放功能已實作並通過 hexo build 驗證（config.bgm.playlist 注入正確、JS 動態建立 audio 邏輯完整）
-- 最後一次 commit：`d4959a1`（隨機播放功能重構 — Pug each+else 語法限制修復）
-- 最後一次 push：尚未 push（ahead of origin/main by 2 commits）
-- 測試音檔：`source/audio/` 有 3 首測試 mp3（440/523/659 Hz）
+- 隨機播放功能已實作但尚未測試
+- 最後一次 commit：`7aa0fba`（更換側邊欄 Logo）
+- 最後一次 push：2026-09-19
+- **卡住的點**：tsc 編譯失敗（tsconfig.json 設定不兼容新版 TypeScript），改為直接修改 `arknights.js` 跳過
 
 ## 4. 重要決定與限制
 - **不 git clone 主題目錄**：`themes/arknights/` 是 clone 的子模組，不能再 git clone，更新主題直接覆蓋檔案
@@ -97,10 +95,12 @@ git push                          # 推到 origin/main
 ```
 
 ## 7. 下一步
-- [x] ~~測試隨機播放功能（新增 2-3 首 mp3 到 `source/audio/`，設定 playlist 並驗證）~~ — ✅ hexo build 通過，config.bgm.playlist 注入正確，JS 動態建立 audio 邏輯完整
+- [ ] 測試隨機播放功能（新增 2-3 首 mp3 到 `source/audio/`，設定 playlist 並驗證）
 - [ ] 在瀏覽器中確認各 BA 元素是否正常（光環、圓點、MomoTalk blockquote、膠囊按鈕、卡片浮起、捲軸、選取色）
 - [ ] 檢查手機版（<769px）是否有跑版
 - [ ] 檢查暗色模式切換是否正常
-- [ ] `source/audio/` 放入真實 BGM 取代測試音檔
-- [ ] Push 到 `origin/main`（目前 ahead by 2 commits）
 - [ ] 確認 Vercel 部署成功
+推送的分支：檔案寫「推到 origin/main」，但流程只寫了 git push。如果本地分支不是 main（例如是 master），單純 git push 不會更新 main，Vercel 就不會重新部署。先跑一次 git branch --show-current，如果是 master，要用 git push origin master:main。
+.ts 與 .js 不同步：因為 tsc 編譯失敗，你是直接改 arknights.js，但 canvaDust.ts 也改了。之後如果有人重新編譯，或用覆蓋檔案的方式更新主題，直接改的 arknights.js 會被蓋掉。建議在檔案裡加一句：「arknights.js 為手動修改，勿用 tsc 重新產生」。
+播放清單的格式範例：現在只寫了「新增 playlist: [] 欄位」，沒有寫每一首要怎麼填。補一個實際範例，測試時模型才不用猜。
+Vercel 驗證：最後一項是確認部署成功，可以補上「失敗時先看 build log，Nunjucks 的 unknown tag 這類錯誤通常來自 _posts 文章用到主題專用標籤」。

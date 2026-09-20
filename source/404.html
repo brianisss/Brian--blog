@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 連線中斷</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Nunito', 'Noto Sans TC', sans-serif;
+      background: #ffffff;
+      color: #2b8fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .error-code {
+      font-size: 8rem;
+      font-weight: 700;
+      color: #2b8fff;
+      text-shadow: 0 0 20px rgba(43, 143, 255, 0.3);
+      line-height: 1;
+    }
+    .error-message {
+      font-size: 1.5rem;
+      color: #5a7ba8;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    .home-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: linear-gradient(135deg, #3b9eff, #2b8fff);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 999px;
+      font-weight: 600;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .home-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(43, 143, 255, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="error-code">404</div>
+  <p class="error-message">與夏萊的連線中斷了...</p>
+  <a href="/" class="home-btn">回到夏萊總部</a>
+</body>
+</html>

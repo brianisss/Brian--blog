@@ -1,19 +1,17 @@
-@media ( min-width 769px)
-  main
-    -ms-scrollbar-base-color var(--theme-bar-color-2)
-    -ms-scrollbar-track-color var(--theme-bar-color-3)
-    scrollbar-color var(--theme-bar-color-0) var(--theme-bar-color-2)
-    scrollbar-width thin
-    scrollbar-gutter stable
+/* BA 風格捲軸美化 */
+@media (min-width: 769px)
   ::-webkit-scrollbar
-    width 6px
-    height 6px
+    width 10px
+    height 10px
   ::-webkit-scrollbar-thumb
-    background-color var(--theme-bar-color-2)
-    border-radius .25em
+    background linear-gradient(180deg, #3b9eff, #2b8fff)
+    border-radius 5px
   ::-webkit-scrollbar-track
-    background-color var(--theme-bar-color-3)
+    background #e3eefb
   ::-webkit-scrollbar-thumb:hover
-    background-color var(--theme-bar-color-1)
-  ::-webkit-scrollbar-thumb:window-inactive
-    background-color var(--theme-bar-color-3)
+    background linear-gradient(180deg, #2b8fff, #1a6fd4)
+
+/* 全域覆蓋 */
+main
+  scrollbar-color var(--theme-bar-color-0) var(--theme-bar-color-2)
+  scrollbar-width thin

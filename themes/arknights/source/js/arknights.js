@@ -128,7 +128,24 @@ class expands {
             this.addEvent(item.children[0]);
         });
     };
-    constructor() { }
+    constructor() {
+        // 監聽按鍵按壓
+        document.addEventListener('keypress', (ev) => {
+            if (this.inChanging) {
+                return;
+            }
+            if (ev.key === 'c' && ev.target &&
+                !['INPUT', 'TEXTAREA'].includes(ev.target.tagName)) {
+                this.change();
+            }
+        });
+        // 監聽按鈕點擊
+        this.btn.addEventListener('click', () => {
+            if (!this.inChanging) {
+                this.change();
+            }
+        });
+    }
 }
 let expand = new expands();
 class Code {
@@ -746,14 +763,21 @@ class ColorMode {
         
         code.resetMermaid();
         this.syncGiscusTheme();
-    };;
+    };
     constructor() {
+        // 監聽按鍵按壓 C 鍵切換主題
         document.addEventListener('keypress', (ev) => {
             if (this.inChanging) {
                 return;
             }
             if (ev.key === 'c' && ev.target &&
                 !['INPUT', 'TEXTAREA'].includes(ev.target.tagName)) {
+                this.change();
+            }
+        });
+        // 監聽按鈕點擊切換主題
+        this.btn.addEventListener('click', () => {
+            if (!this.inChanging) {
                 this.change();
             }
         });
