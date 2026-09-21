@@ -129,22 +129,7 @@ class expands {
         });
     };
     constructor() {
-        // 監聽按鍵按壓
-        document.addEventListener('keypress', (ev) => {
-            if (this.inChanging) {
-                return;
-            }
-            if (ev.key === 'c' && ev.target &&
-                !['INPUT', 'TEXTAREA'].includes(ev.target.tagName)) {
-                this.change();
-            }
-        });
-        // 監聽按鈕點擊
-        this.btn.addEventListener('click', () => {
-            if (!this.inChanging) {
-                this.change();
-            }
-        });
+        this.setHTML();
     }
 }
 let expand = new expands();
@@ -686,7 +671,7 @@ class ColorMode {
     html = document.documentElement;
     dark = this.html.getAttribute('theme-mode') === 'dark';
     inChanging = false;
-    btn = getElement('#color-mode');
+    btn = null;
     syncGiscusTheme = () => {
         if (typeof giscusManager !== 'undefined' && giscusManager.isLoaded()) {
             giscusManager.syncTheme();
@@ -720,7 +705,7 @@ class ColorMode {
         `;
         // 讀取目標主題的 CSS 變數並設定
         let computed = getComputedStyle(this.html);
-        let bgImage = computed.getPropertyValue('--' + targetTheme + '-background').trim();
+        let bgImageComputed = computed.getPropertyValue('--' + targetTheme + '-background').trim();
         let bgColor = computed.getPropertyValue('--theme-background').trim();
         // 注意：切換後 --theme-background 會變，所以先記錄舊值
         // 實際上 bgColor 會是舊主題的值，需要手動設定
@@ -728,9 +713,10 @@ class ColorMode {
             dark: '#0d1b2a',
             light: '#eef4fb'
         };
-        overlay.style.background = `var(${targetTheme === 'dark' ? "'https://ak.hypergryph.com/assets/index/images/ak/pc/bk.jpg'" : "'/img/bk.jpg'}), ${bgColors[targetTheme]}`;
-        // 更簡單的方式：直接用內聯 style 設定
-        overlay.style.backgroundImage = `url("${targetTheme === 'dark' ? 'https://ak.hypergryph.com/assets/index/images/ak/pc/bk.jpg' : '/img/bk.jpg'}")`;
+        let bgImageDark = 'https://ak.hypergryph.com/assets/index/images/ak/pc/bk.jpg';
+        let bgImageLight = '/img/bk.jpg';
+        let bgImage = targetTheme === 'dark' ? bgImageDark : bgImageLight;
+        overlay.style.backgroundImage = `url("${bgImage}")`;
         overlay.style.backgroundColor = bgColors[targetTheme];
         
         // 插入 body
@@ -765,22 +751,33 @@ class ColorMode {
         this.syncGiscusTheme();
     };
     constructor() {
-        // 監聽按鍵按壓 C 鍵切換主題
-        document.addEventListener('keypress', (ev) => {
-            if (this.inChanging) {
+        // DOM 載入後初始化按鈕
+        const self = this;
+        const initBtn = () => {
+            self.btn = document.getElementById('color-mode');
+            if (!self.btn) {
+                // 如果還沒載入，等下一輪
+                setTimeout(initBtn, 50);
                 return;
             }
-            if (ev.key === 'c' && ev.target &&
-                !['INPUT', 'TEXTAREA'].includes(ev.target.tagName)) {
-                this.change();
-            }
-        });
-        // 監聽按鈕點擊切換主題
-        this.btn.addEventListener('click', () => {
-            if (!this.inChanging) {
-                this.change();
-            }
-        });
+            // 監聽按鈕點擊切換主題
+            self.btn.addEventListener('click', () => {
+                if (!self.inChanging) {
+                    self.change();
+                }
+            });
+            // 監聽按鍵按壓 C 鍵切換主題
+            document.addEventListener('keypress', (ev) => {
+                if (self.inChanging) {
+                    return;
+                }
+                if (ev.key === 'c' && ev.target &&
+                    !['INPUT', 'TEXTAREA'].includes(ev.target.tagName)) {
+                    self.change();
+                }
+            });
+        };
+        initBtn();
     }
 }
 try {
