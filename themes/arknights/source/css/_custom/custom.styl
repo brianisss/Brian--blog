@@ -1,221 +1,445 @@
-/* ===== Blue Archive Reskin - Custom Styles ===== */
-/* 這個檔案由 hexo-theme-arknights → Blue Archive 換肤任務新增 */
-/* 不要修改其他核心檔案，所有覆蓋都在這裡 */
-
-/* =====================================================
-   1. 全域 BA 雙層半調圓點紋理
-   ===================================================== */
-body::before
-  content ''
+/* ========================================
+   A. SCHALE 開機載入畫面樣式
+   ======================================== */
+#schale-boot-screen
   position fixed
-  top 0
-  left 0
-  width 100%
-  height 100%
-  /* 底層大圓點 */
-  background-image radial-gradient(circle, rgba(43, 143, 255, 0.05) 1px, transparent 1px)
-  background-size 20px 20px
-  pointer-events none
-  z-index 0
-  opacity 1
-
-/* 上層小圓點 — BA 海報印刷網點感 */
-body::after
-  content ''
-  position fixed
-  top 0
-  left 0
-  width 100%
-  height 100%
-  background-image radial-gradient(circle, rgba(255, 216, 77, 0.04) 0.5px, transparent 0.5px)
-  background-size 10px 10px
-  pointer-events none
-  z-index 0
-  opacity 1
-
-/* =====================================================
-   2. BA 光環裝飾 — ::before 挪到 .halo-deco
-   ===================================================== */
-.halo-deco
-  content ''
-  position fixed
-  top 40px
-  right 60px
-  width 220px
-  height 70px
-  border 3px solid rgba(43, 143, 255, 0.35)
-  border-radius 50%
-  pointer-events none
-  z-index 0
-  animation haloFloat 6s ease-in-out infinite, haloGlow 6s ease-in-out infinite
-
-@keyframes haloFloat
-  0%, 100%
-    transform translateY(0)
-  50%
-    transform translateY(-10px)
-
-@keyframes haloGlow
-  0%, 100%
-    box-shadow 0 0 12px rgba(43, 143, 255, 0.2), 0 0 24px rgba(43, 143, 255, 0.08)
-  50%
-    box-shadow 0 0 20px rgba(43, 143, 255, 0.4), 0 0 40px rgba(43, 143, 255, 0.15)
-
-@media (max-width: 769px)
-  .halo-deco
-    display none
-
-/* =====================================================
-   3. MomoTalk 對話框風格 blockquote
-   ===================================================== */
-blockquote
-  margin 16px 0
-  padding 14px 20px
-  border-left none
+  inset 0
+  z-index 9999
   background #ffffff
-  border-radius 18px
-  box-shadow 0 2px 12px rgba(43, 143, 255, 0.12)
-  position relative
-  color inherit
+  display flex
+  align-items center
+  justify-content center
+  transition opacity 0.5s ease
+  pointer-events all
 
-  /* 天空藍尾巴 */
+  .boot-content
+    text-align center
+
+    .boot-title
+      font-family 'Nunito', sans-serif
+      font-weight 900
+      font-size 3rem
+      color #2b8fff
+      letter-spacing 0.5em
+      margin-bottom 1rem
+
+    .boot-sub
+      font-family 'JetBrains Mono', monospace
+      font-size 0.875rem
+      color #898989
+      letter-spacing 0.1em
+      margin-bottom 2rem
+
+      .boot-dots
+        span
+          display inline-block
+          animation schaleBootDot 1.4s ease-in-out infinite
+
+          &:nth-child(1)
+            animation-delay 0s
+
+          &:nth-child(2)
+            animation-delay 0.2s
+
+          &:nth-child(3)
+            animation-delay 0.4s
+
+    .boot-progress
+      width 200px
+      height 2px
+      background rgba(43, 143, 255, 0.1)
+      margin 0 auto
+      border-radius 1px
+      overflow hidden
+
+      .boot-bar
+        display block
+        width 0
+        height 100%
+        background #2b8fff
+        animation schaleBootBar 1.5s ease-out forwards
+
+@keyframes schaleBootDot
+  0%, 80%, 100%
+    opacity 0.3
+  40%
+    opacity 1
+
+@keyframes schaleBootBar
+  0%
+    width 0
+  100%
+    width 100%
+
+@media (prefers-reduced-motion reduce)
+  #schale-boot-screen
+    display none !important
+
+/* ========================================
+   B. 學園徽章式分類
+   ======================================== */
+.category-list-link
+  a
+    border-radius 999px !important
+    padding 6px 20px 6px 30px !important
+    position relative
+    transition all 0.2s ease
+
+    &::before
+      content ''
+      display inline-block
+      width 8px
+      height 8px
+      border-radius 50%
+      margin-right 8px
+      margin-top 2px
+      vertical-align middle
+      flex-shrink 0
+      background #2b8fff
+
+    &:hover
+      background-color rgba(43, 143, 255, 0.15) !important
+      transform translateX(4px)
+
+/* 根據分類連結中的關鍵字匹配 */
+a[href*="abydos"]
+  &::before
+    background #e8b34b !important
+  background-color rgba(232, 179, 75, 0.15) !important
+  color #ffffff !important
+
+a[href*="trinity"]
+  &::before
+    background #e8e4d8 !important
+  background-color rgba(232, 228, 216, 0.2) !important
+  color #2b3a4a !important
+
+a[href*="gehenna"]
+  &::before
+    background #ff6b6b !important
+  background-color rgba(255, 107, 107, 0.15) !important
+  color #ffffff !important
+
+a[href*="millennium"]
+  &::before
+    background #4ecdc4 !important
+  background-color rgba(78, 205, 196, 0.15) !important
+  color #ffffff !important
+
+a[href*="hyakkiyako"]
+  &::before
+    background #a78bfa !important
+  background-color rgba(167, 139, 250, 0.15) !important
+  color #ffffff !important
+
+a[href*="redwinter"]
+  &::before
+    background #c0392b !important
+  background-color rgba(192, 57, 43, 0.15) !important
+  color #ffffff !important
+
+a[href*="arius"]
+  &::before
+    background #95a5a6 !important
+  background-color rgba(149, 165, 166, 0.15) !important
+  color #ffffff !important
+
+/* ========================================
+   C. 側邊欄目錄 → 任務簡報面板
+   ======================================== */
+#toc-div
+  background #ffffff !important
+  border-radius 16px !important
+  box-shadow 0 4px 20px rgba(43, 143, 255, 0.12) !important
+  padding 12px !important
+
+  .toc
+    counter-reset task-counter
+    padding 0 !important
+
+    .toc-item
+      counter-increment task-counter
+      position relative
+      padding-left 32px !important
+      margin-bottom 4px !important
+
+      &::before
+        content counter(task-counter, decimal-leading-zero)
+        position absolute
+        left 8px
+        top 2px
+        font-family 'JetBrains Mono', monospace
+        font-size 0.75rem
+        font-weight 700
+        color #2b8fff
+
+      .toc-link
+        border-left 3px solid transparent
+        padding-left 8px !important
+        transition all 0.2s ease
+
+        &:hover
+          border-left-color #2b8fff
+          background-color rgba(43, 143, 255, 0.05) !important
+
+    .active
+      background-color rgba(43, 143, 255, 0.08) !important
+      color #2b8fff !important
+      border-radius 8px !important
+
+      .toc-link
+        border-left-color #2b8fff !important
+        font-weight 700 !important
+
+      &::before
+        color #1a6fd4 !important
+
+@media (max-width 768px)
+  #toc-div
+    background transparent !important
+    border-radius 0 !important
+    box-shadow none !important
+
+/* ========================================
+   D. 文章頁「任務開始」標頭
+   ======================================== */
+#post-title
+  position relative
+  margin-bottom 16px !important
+
+  h1
+    font-weight 800 !important
+    letter-spacing -0.02em
+
+#post-info
+  display flex
+  align-items center
+  gap 12px
+
+  time
+    background-color #2b3a4a !important
+    color #ffffff !important
+    font-family 'JetBrains Mono', monospace !important
+    padding 6px 14px !important
+    border-radius 6px !important
+    font-size 0.85rem !important
+    letter-spacing 0.05em
+
+    &::before
+      content 'MISSION //'
+      margin-right 6px
+      opacity 0.7
+      font-weight 700
+
+#post-title::after
+  content ''
+  display block
+  width 120px
+  height 3px
+  background linear-gradient(90deg, #2b8fff, #ffd84d)
+  margin-top 12px
+  border-radius 2px
+
+/* ========================================
+   E. BGM 播放器 UI
+   ======================================== */
+#bgm-control
+  width 44px !important
+  height 44px !important
+  border-radius 50% !important
+  background #ffffff !important
+  box-shadow 0 2px 12px rgba(43, 143, 255, 0.25) !important
+  display flex !important
+  align-items center
+  justify-content center
+  transition all 0.3s ease
+  position relative
+
+  &:hover
+    transform scale(1.08)
+    box-shadow 0 4px 20px rgba(43, 143, 255, 0.35) !important
+
+.bgm-waves
+  display none
+  position absolute
+  right -24px
+  top 50%
+  transform translateY(-50%)
+  gap 3px
+  align-items flex-end
+  height 16px
+
+  .wave-bar
+    width 3px
+    height 16px
+    background #2b8fff
+    border-radius 2px
+    transform-origin bottom
+    animation schaleWaveBar 0.8s ease-in-out infinite
+
+    &:nth-child(1)
+      animation-delay 0s
+
+    &:nth-child(2)
+      animation-delay 0.15s
+
+    &:nth-child(3)
+      animation-delay 0.3s
+
+body.ba-playing
+  .bgm-waves
+    display flex
+
+body:not(.ba-playing)
+  .bgm-waves .wave-bar
+    transform scaleY(0.2) !important
+    opacity 0.3 !important
+    animation none !important
+
+@keyframes schaleWaveBar
+  0%, 100%
+    transform scaleY(0.3)
+    opacity 0.5
+  50%
+    transform scaleY(1)
+    opacity 1
+
+/* ========================================
+   F. 分頁器 BA 化
+   ======================================== */
+#paginator
+  margin-top 32px !important
+  padding 16px 0 !important
+  border-top 2px solid rgba(43, 143, 255, 0.2) !important
+
+  a, span
+    display inline-flex
+    align-items center
+    justify-content center
+    min-width 44px
+    height 44px
+    padding 0 16px
+    margin 0 4px
+    border-radius 999px !important
+    font-family 'Nunito', sans-serif
+    font-weight 700
+    font-size 0.9rem
+    transition all 0.2s ease
+    text-decoration none !important
+
+  a
+    background #ffffff !important
+    color #2b8fff !important
+    border 2px solid #2b8fff !important
+
+    &:hover
+      background #2b8fff !important
+      color #ffffff !important
+      transform translateY(-2px)
+      box-shadow 0 4px 12px rgba(43, 143, 255, 0.3) !important
+
+  .current
+    background #2b8fff !important
+    color #ffffff !important
+    border 2px solid #2b8fff !important
+    box-shadow 0 4px 12px rgba(43, 143, 255, 0.3) !important
+
+  .next::after
+    content '▲'
+    display inline-block
+    margin-left 4px
+
+  .previous::before
+    content '▼'
+    display inline-block
+    margin-right 4px
+
+/* ========================================
+   G. 搜尋遮罩終端機風格
+   ======================================== */
+.search-popup
+  background rgba(232, 244, 251, 0.85) !important
+  backdrop-filter blur(8px) !important
+  -webkit-backdrop-filter blur(8px) !important
+  border-radius 16px !important
+  box-shadow 0 8px 32px rgba(43, 143, 255, 0.15) !important
+
+#search-header
+  input
+    background rgba(43, 143, 255, 0.05) !important
+    border 2px solid rgba(43, 143, 255, 0.2) !important
+    border-radius 12px !important
+    padding 12px 20px !important
+    transition all 0.2s ease
+    caret-color #2b8fff !important
+
+    &:focus
+      border-color #2b8fff !important
+      background rgba(43, 143, 255, 0.1) !important
+      box-shadow 0 0 0 3px rgba(43, 143, 255, 0.1) !important
+
+.search-popup::before
+  content 'SEARCH // SCHALE DATABASE'
+  display block
+  text-align center
+  font-family 'JetBrains Mono', monospace
+  font-size 0.7rem
+  color #898989
+  letter-spacing 0.15em
+  margin-bottom 12px
+  font-weight 700
+
+#search-result .search-result-item
+  transition all 0.2s ease
+  position relative
+  padding-left 12px !important
+
   &::before
     content ''
     position absolute
+    left 0
     top 0
-    left -8px
-    width 8px
+    width 0
     height 100%
     background #2b8fff
-    border-radius 18px 0 0 18px
+    transition width 0.2s ease
+    border-radius 2px
 
-  cite
-    font-weight 500
-
-  /* 巢狀 blockquote → 回覆氣泡（右對齊） */
-  blockquote
-    background #f0f6ff
-    margin 8px 20px 8px 0
-    padding 10px 16px
-    border-radius 18px 18px 4px 18px
-    align-self flex-end
-    max-width 85%
-    box-shadow 0 1px 8px rgba(43, 143, 255, 0.08)
+  &:hover
+    background rgba(43, 143, 255, 0.08) !important
 
     &::before
-      display none
+      width 3px
 
-    cite
-      display block
-      text-align right
-      font-weight 400
-      color #6a8cba
+/* ========================================
+   H. 頁首選單 BA 化
+   ======================================== */
+.navItemTitle
+  position relative
+  transition all 0.2s ease
 
-/* =====================================================
-   4. BA 風格按鈕 — 膠囊形 + 漸層
-   ===================================================== */
-.bottom-btn,
-.read-more,
-.btn,
-button,
-.button,
-#paginator a,
-.tag a,
-.link-card-btn,
-.btn-readmore
-  border-radius 999px !important
-  background linear-gradient(135deg, #3b9eff, #2b8fff) !important
-  color #fff !important
-  border none !important
-  display inline-block
-  transition transform 0.25s, box-shadow 0.25s
+  &::after
+    content ''
+    position absolute
+    left 0
+    bottom -4px
+    width 100%
+    height 3px
+    background #2b8fff
+    transform scaleX(0)
+    transform-origin left
+    transition transform 0.2s ease
+    border-radius 2px
 
-  &:hover
-    transform translateY(-2px)
-    box-shadow 0 6px 20px rgba(43, 143, 255, 0.35)
+.navItem.active .navItemTitle
+  font-weight 800 !important
+  color #2b8fff !important
 
-/* =====================================================
-   5. 卡片浮起效果
-   ===================================================== */
-.recent-post, .post-card, .card, .link-card-wrapper, article
-  transition transform 0.3s ease, box-shadow 0.3s ease
+  &::after
+    transform scaleX(1) !important
 
-  &:hover
-    transform translateY(-4px)
-    box-shadow 0 8px 32px rgba(43, 143, 255, 0.25)
+.navItem:hover .navItemTitle::after
+  transform scaleX(1) !important
 
-/* =====================================================
-   6. 捲軸美化
-   ===================================================== */
-@media (min-width: 769px)
-  ::-webkit-scrollbar
-    width 10px
-    height 10px
-  ::-webkit-scrollbar-thumb
-    background linear-gradient(180deg, #3b9eff, #2b8fff)
-    border-radius 5px
-  ::-webkit-scrollbar-track
-    background #e3eefb
-  ::-webkit-scrollbar-thumb:hover
-    background linear-gradient(180deg, #2b8fff, #1a6fd4)
-  /* 覆蓋原 scrollbar 設定 */
-  main
-    scrollbar-color var(--theme-bar-color-0) var(--theme-bar-color-2)
-    scrollbar-width thin
-
-/* =====================================================
-   7. 選取文字顏色
-   ===================================================== */
-::selection
-  background #2b8fff
-  color #ffffff
-
-::-moz-selection
-  background #2b8fff
-  color #ffffff
-
-/* =====================================================
-   8. 標籤膠囊化
-   ===================================================== */
-.tag a,
-a.tag,
-.tag-link,
-.post-tag
-  border-radius 999px !important
-  padding 2px 14px !important
-
-/* =====================================================
-   9. 亮色模式天空漸層背景
-   ===================================================== */
-:root[theme-mode=light] body
-  background-image linear-gradient(180deg, #a8d8ff 0%, #e8f4ff 40%, #ffffff 100%)
-
-/* =====================================================
-   10. 暗色模式深藍漸層背景
-   ===================================================== */
-:root[theme-mode=dark] body
-  background-image linear-gradient(180deg, #0d1b2a 0%, #1b2a4a 40%, #0d1b2a 100%)
-
-/* =====================================================
-   11. 全域卡片圓角化
-   ===================================================== */
-article, aside, .card, .recent-post, .post-card, .link-card-wrapper, .post-header, .post-info, #paginator
-  border-radius 16px
-
-/* =====================================================
-   12. 面板柔和陰影
-   ===================================================== */
-.recent-post, .card, .post-card, article
-  box-shadow 0 4px 24px rgba(43, 143, 255, 0.15)
-
-/* =====================================================
-   13. 導航列銳利線條（維持原主題特色）
-   ===================================================== */
-header
-  border-bottom 2px solid var(--theme-bar-color-0)
-
-/* =====================================================
-   14. 搜尋框圓角
-   ===================================================== */
-.search-container input, .search-input
-  border-radius 20px
+.navItem:hover .navItemTitle
+  color #2b8fff !important

@@ -212,3 +212,4 @@ stylesheets:
 # 在 `<body>` 尾部引入 JavaScript 脚本
 # 支持直接引入短片段，用 "{ }" 包裹（包括引号），例： - "{var test='test'}"
 scripts:
+  - /js/custom.js
