@@ -1,38 +1,23 @@
 ---
-title: Hello World
+title: 請填寫文章標題（範本一）
+date: 2026-09-18 23:07:25
+description: 請用一兩句描述這篇文章的重點。
+tags: []
+categories: []
 ---
-Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
 
-## Quick Start
+> **文章摘要：** 請在這裡用一兩句介紹文章內容。
 
-### Create a new post
+<!-- more -->
 
-``` bash
-$ hexo new "My New Post"
-```
+## 請填寫第一個章節標題
 
-More info: [Writing](https://hexo.io/docs/writing.html)
+請在這裡撰寫文章正文。
 
-### Run server
+## 可選內容
 
-``` bash
-$ hexo server
-```
+需要時保留或複製以下格式，完成後刪掉提示文字：
 
-More info: [Server](https://hexo.io/docs/server.html)
-
-### Generate static files
-
-``` bash
-$ hexo generate
-```
-
-More info: [Generating](https://hexo.io/docs/generating.html)
-
-### Deploy to remote sites
-
-``` bash
-$ hexo deploy
-```
-
-More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
+- 圖片：`![圖片說明](/img/圖片檔名.webp)`
+- 程式碼：使用 Markdown 程式碼區塊。
+- 提示框：`{% note %}提示內容{% endnote %}`
