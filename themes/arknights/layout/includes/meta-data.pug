@@ -33,35 +33,93 @@ script.
   (function () {
     var backgroundSets = !{JSON.stringify(backgroundSets)};
     var root = document.documentElement;
-    function chooseBackgroundSet(animate) {
-      var currentName = root.getAttribute('data-background-set');
-      var candidates = animate
-        ? backgroundSets.filter(function (set) { return set.name !== currentName; })
-        : backgroundSets;
-      var selected = candidates[Math.floor(Math.random() * candidates.length)];
-      if (!selected) return;
+    var storageKey = 'arknights-background-set-index';
+    var currentIndex = 0;
+    var requestedIndex = 0;
+    var transitionToken = 0;
+    var preloadCache = Object.create(null);
 
-      var transition = null;
-      if (animate && document.body) {
-        transition = document.createElement('div');
+    try {
+      var lastIndex = parseInt(window.localStorage.getItem(storageKey), 10);
+      if (!isNaN(lastIndex) && lastIndex >= 0 && lastIndex < backgroundSets.length) {
+        currentIndex = (lastIndex + 1) % backgroundSets.length;
+      }
+    } catch (error) {}
+    requestedIndex = currentIndex;
+
+    function setBackground(index) {
+      var selected = backgroundSets[index];
+      root.style.setProperty('--light-background', "url('" + selected.light + "')");
+      root.style.setProperty('--dark-background', "url('" + selected.dark + "')");
+      root.setAttribute('data-background-set', selected.name);
+      try { window.localStorage.setItem(storageKey, String(index)); } catch (error) {}
+    }
+
+    function preloadImage(source) {
+      return new Promise(function (resolve) {
+        var image = new Image();
+        var finished = false;
+        function finish() {
+          if (finished) return;
+          finished = true;
+          resolve(image);
+        }
+        image.decoding = 'async';
+        image.onload = function () {
+          if (typeof image.decode === 'function') image.decode().then(finish, finish);
+          else finish();
+        };
+        image.onerror = finish;
+        image.src = source;
+        if (image.complete) {
+          if (image.naturalWidth && typeof image.decode === 'function') image.decode().then(finish, finish);
+          else finish();
+        }
+      });
+    }
+
+    function preloadSet(index) {
+      if (preloadCache[index]) return preloadCache[index].promise;
+      var selected = backgroundSets[index];
+      var images = [selected.light, selected.dark];
+      var promise = Promise.all(images.map(preloadImage));
+      preloadCache[index] = { images: images, promise: promise };
+      return promise;
+    }
+
+    function keepCurrentAndNextPreloaded() {
+      var nextIndex = (currentIndex + 1) % backgroundSets.length;
+      Object.keys(preloadCache).forEach(function (index) {
+        if (Number(index) !== currentIndex && Number(index) !== nextIndex) delete preloadCache[index];
+      });
+      preloadSet(nextIndex);
+    }
+
+    function advanceBackground() {
+      requestedIndex = (requestedIndex + 1) % backgroundSets.length;
+      var nextIndex = requestedIndex;
+      var token = ++transitionToken;
+      preloadSet(nextIndex).then(function () {
+        if (token !== transitionToken) return;
+
+        var transition = document.createElement('div');
         transition.className = 'theme-background-transition';
         transition.style.backgroundImage = getComputedStyle(document.body).backgroundImage;
         transition.style.backgroundColor = getComputedStyle(root).getPropertyValue('--theme-background').trim();
         document.body.insertBefore(transition, document.body.firstChild);
-      }
 
-      root.style.setProperty('--light-background', "url('" + selected.light + "')");
-      root.style.setProperty('--dark-background', "url('" + selected.dark + "')");
-      root.setAttribute('data-background-set', selected.name);
-
-      if (transition) {
+        currentIndex = nextIndex;
+        setBackground(currentIndex);
         requestAnimationFrame(function () { transition.classList.add('is-fading'); });
         window.setTimeout(function () { transition.remove(); }, 800);
-      }
+        keepCurrentAndNextPreloaded();
+      });
     }
 
-    chooseBackgroundSet(false);
-    document.addEventListener('pjax:complete', function () { chooseBackgroundSet(true); });
+    setBackground(currentIndex);
+    preloadSet(currentIndex);
+    keepCurrentAndNextPreloaded();
+    document.addEventListener('pjax:complete', advanceBackground);
   })();
 
 link(rel="preload", as="font", crossorigin="anonymous", href=url_for('font/JetBrainsMono-Regular.woff2'))
