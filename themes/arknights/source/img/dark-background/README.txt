@@ -1,6 +1,6 @@
 暗色模式背景
 
-目前使用 kivotos-plaza.webp，已裁掉左側標誌並降低亮度、飽和度和細節，讓文章仍是視覺重點。
+目前使用 kivotos-plaza-night.webp（1600 × 900，16:9）。以官方網站廣場背景製作夜景色調，保留完整寬幅構圖，供桌面背景使用。
 
 來源：Blue Archive 官方中文網站「世界觀」頁面的背景素材
 https://www.bluearchive-cn.com/world
