@@ -1,6 +1,6 @@
 # 主題背景組
 
-進入網站時預設使用 set-01；切換明暗時會沿用當前組。每次由暗色切回亮色，組別才按 set-01 到 set-06 順序前進（例如 set-01 亮 → set-01 暗 → set-02 亮）。下一組會先預載並解碼再切換；重新載入或 PJAX 導頁會保留當前組。背景使用 contain，完整顯示圖片，空白部分由主題底色填滿。圖片請使用檔名 `background.jpg`，放在對應資料夾：
+進入網站時預設使用 set-01；切換明暗時會沿用當前組。每次由暗色切回亮色，組別才按 set-01 到 set-06 順序前進（例如 set-01 亮 → set-01 暗 → set-02 亮）。下一組會先預載並解碼再切換；重新載入或 PJAX 導頁會保留當前組。背景使用 cover 鋪滿頁面；來源圖片檔案與原始解析度保持不變，瀏覽器會依視窗比例裁切邊緣。圖片請使用檔名 `background.jpg`，放在對應資料夾：
 
 - `source/img/background-sets/set-01/light/background.jpg`（亮色）
 - `source/img/background-sets/set-01/dark/background.jpg`（暗色）
