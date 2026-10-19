@@ -677,7 +677,7 @@ class ColorMode {
             giscusManager.syncTheme();
         }
     };
-    change = () => {
+    change = async () => {
         if (this.inChanging)
             return;
         this.inChanging = true;
@@ -690,6 +690,13 @@ class ColorMode {
         background.style.backgroundImage = currentStyles.getPropertyValue(`--${previousTheme}-background`).trim();
         background.style.backgroundColor = currentStyles.getPropertyValue('--theme-background').trim();
         document.body.insertBefore(background, document.body.firstChild);
+        // Advance the paired background only when switching from dark back to light.
+        if (this.dark && typeof window.advanceBackgroundSet === 'function') {
+            try {
+                await window.advanceBackgroundSet();
+            }
+            catch (e) { }
+        }
         this.html.classList.add('theme-changing');
         this.html.setAttribute('theme-mode', nextTheme);
         this.dark = nextTheme === 'dark';

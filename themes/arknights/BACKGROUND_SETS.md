@@ -1,11 +1,11 @@
 # 主題背景組
 
-每次完整載入頁面或 PJAX 頁面切換時，主題會按 set-01 到 set-06 順序前進一組，切換明暗模式時會沿用同一組。下一組會先預載並解碼，再淡出淡入。背景使用 contain，完整顯示圖片，空白部分由主題底色填滿。圖片請使用檔名 `background.jpg`，放在對應資料夾：
+進入網站時預設使用 set-01；切換明暗時會沿用當前組。每次由暗色切回亮色，組別才按 set-01 到 set-06 順序前進（例如 set-01 亮 → set-01 暗 → set-02 亮）。下一組會先預載並解碼再切換；重新載入或 PJAX 導頁會保留當前組。背景使用 contain，完整顯示圖片，空白部分由主題底色填滿。圖片請使用檔名 `background.jpg`，放在對應資料夾：
 
 - `source/img/background-sets/set-01/light/background.jpg`（亮色）
 - `source/img/background-sets/set-01/dark/background.jpg`（暗色）
 
-依此放到 `set-02` 至 `set-06`。切換程式在 `layout/includes/meta-data.pug`，初始組號存在瀏覽器 localStorage，重新載入會接著輪播。
+依此放到 `set-02` 至 `set-06`。切換程式在 `layout/includes/meta-data.pug` 與 `source/js/_src/include/ColorMode.ts`，目前組號存在瀏覽器 localStorage。
 
 舊版基沃托斯夜景保留為未啟用備選圖：`source/img/dark-background/kivotos-plaza-night.webp`。
 

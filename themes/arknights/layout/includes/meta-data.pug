@@ -35,17 +35,14 @@ script.
     var root = document.documentElement;
     var storageKey = 'arknights-background-set-index';
     var currentIndex = 0;
-    var requestedIndex = 0;
-    var transitionToken = 0;
     var preloadCache = Object.create(null);
 
     try {
       var lastIndex = parseInt(window.localStorage.getItem(storageKey), 10);
       if (!isNaN(lastIndex) && lastIndex >= 0 && lastIndex < backgroundSets.length) {
-        currentIndex = (lastIndex + 1) % backgroundSets.length;
+        currentIndex = lastIndex;
       }
     } catch (error) {}
-    requestedIndex = currentIndex;
 
     function setBackground(index) {
       var selected = backgroundSets[index];
@@ -95,23 +92,11 @@ script.
       preloadSet(nextIndex);
     }
 
-    function advanceBackground() {
-      requestedIndex = (requestedIndex + 1) % backgroundSets.length;
-      var nextIndex = requestedIndex;
-      var token = ++transitionToken;
-      preloadSet(nextIndex).then(function () {
-        if (token !== transitionToken) return;
-
-        var transition = document.createElement('div');
-        transition.className = 'theme-background-transition';
-        transition.style.backgroundImage = getComputedStyle(document.body).backgroundImage;
-        transition.style.backgroundColor = getComputedStyle(root).getPropertyValue('--theme-background').trim();
-        document.body.insertBefore(transition, document.body.firstChild);
-
+    window.advanceBackgroundSet = function () {
+      var nextIndex = (currentIndex + 1) % backgroundSets.length;
+      return preloadSet(nextIndex).then(function () {
         currentIndex = nextIndex;
         setBackground(currentIndex);
-        requestAnimationFrame(function () { transition.classList.add('is-fading'); });
-        window.setTimeout(function () { transition.remove(); }, 800);
         keepCurrentAndNextPreloaded();
       });
     }
@@ -119,7 +104,6 @@ script.
     setBackground(currentIndex);
     preloadSet(currentIndex);
     keepCurrentAndNextPreloaded();
-    document.addEventListener('pjax:complete', advanceBackground);
   })();
 
 link(rel="preload", as="font", crossorigin="anonymous", href=url_for('font/JetBrainsMono-Regular.woff2'))

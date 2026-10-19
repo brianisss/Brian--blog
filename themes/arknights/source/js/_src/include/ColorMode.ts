@@ -17,7 +17,7 @@ class ColorMode {
   }
 
 
-  public change = () => {
+  public change = async () => {
     if (this.inChanging) return
     this.inChanging = true
     this.btn.style.pointerEvents = 'none'
@@ -29,6 +29,14 @@ class ColorMode {
     background.style.backgroundImage = currentStyles.getPropertyValue(`--${previousTheme}-background`).trim()
     background.style.backgroundColor = currentStyles.getPropertyValue('--theme-background').trim()
     document.body.insertBefore(background, document.body.firstChild)
+
+    // Advance the paired background only when switching from dark back to light.
+    if (this.dark && typeof (window as any).advanceBackgroundSet === 'function') {
+      try {
+        await (window as any).advanceBackgroundSet()
+      } catch (e) {}
+    }
+
     this.html.classList.add('theme-changing')
     this.html.setAttribute('theme-mode', nextTheme)
     this.dark = nextTheme === 'dark'
