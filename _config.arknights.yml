@@ -17,8 +17,8 @@ build_time: false # 是否开启构建时间显示，开启后会在生成的站
 
 # <body> 背景图片链接
 background_image:
-  dark: /img/dark-background/kivotos-plaza-night.webp # 暗色模式：基沃托斯廣場夜景（16:9）
-  light: /img/bk.webp # 亮色模式
+  dark: /img/background-sets/set-06/dark/background.jpg # 校園夜景
+  light: /img/background-sets/set-06/light/background.jpg # 校園白天
 
 # 导航栏
 menu:

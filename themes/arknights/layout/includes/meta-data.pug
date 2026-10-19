@@ -1,3 +1,14 @@
+-
+  const backgroundSets = []
+  for (let i = 1; i <= 6; i++) {
+    const setName = `set-${String(i).padStart(2, '0')}`
+    backgroundSets.push({
+      name: setName,
+      light: url_for(`img/background-sets/${setName}/light/background.jpg`),
+      dark: url_for(`img/background-sets/${setName}/dark/background.jpg`)
+    })
+  }
+
 meta(charset='UTF-8')
 meta(name='viewport' content='width=device-width, initial-scale=1.0')
 title= pageTitle
@@ -17,6 +28,41 @@ link(
   type=(theme.favicon.type ? theme.favicon.type : "image/x-icon")
   href=(url_for(theme.favicon.href ? theme.favicon.href : "favicon.ico"))
 )
+
+script.
+  (function () {
+    var backgroundSets = !{JSON.stringify(backgroundSets)};
+    var root = document.documentElement;
+    function chooseBackgroundSet(animate) {
+      var currentName = root.getAttribute('data-background-set');
+      var candidates = animate
+        ? backgroundSets.filter(function (set) { return set.name !== currentName; })
+        : backgroundSets;
+      var selected = candidates[Math.floor(Math.random() * candidates.length)];
+      if (!selected) return;
+
+      var transition = null;
+      if (animate && document.body) {
+        transition = document.createElement('div');
+        transition.className = 'theme-background-transition';
+        transition.style.backgroundImage = getComputedStyle(document.body).backgroundImage;
+        transition.style.backgroundColor = getComputedStyle(root).getPropertyValue('--theme-background').trim();
+        document.body.insertBefore(transition, document.body.firstChild);
+      }
+
+      root.style.setProperty('--light-background', "url('" + selected.light + "')");
+      root.style.setProperty('--dark-background', "url('" + selected.dark + "')");
+      root.setAttribute('data-background-set', selected.name);
+
+      if (transition) {
+        requestAnimationFrame(function () { transition.classList.add('is-fading'); });
+        window.setTimeout(function () { transition.remove(); }, 800);
+      }
+    }
+
+    chooseBackgroundSet(false);
+    document.addEventListener('pjax:complete', function () { chooseBackgroundSet(true); });
+  })();
 
 link(rel="preload", as="font", crossorigin="anonymous", href=url_for('font/JetBrainsMono-Regular.woff2'))
 link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap")
