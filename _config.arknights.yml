@@ -18,7 +18,7 @@ build_time: false # 是否开启构建时间显示，开启后会在生成的站
 # <body> 背景图片链接
 background_image:
   dark: https://ak.hypergryph.com/assets/index/images/ak/pc/bk.jpg # 暗色模式
-  light: /img/bk.jpg # 亮色模式
+  light: /img/bk.webp # 亮色模式
 
 # 导航栏
 menu:
@@ -94,7 +94,7 @@ search:
 # 背景音乐
 bgm:
   enable: true
-  autoplay: true
+  autoplay: false
   loop: true
   src: /audio/title1.mp3
 
