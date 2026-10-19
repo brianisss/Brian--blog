@@ -62,3 +62,37 @@ h1, h2, h3, h4, h5, h6
 #aside-block
   transition --theme-bg-trans1 1s cubic-bezier(0.4, 0, 0.2, 1)
   will-change transform, opacity
+
+// 淡化明暗切換時的色彩變化，背景圖片則另外交叉淡出。
+body > main
+  position relative
+  z-index 1
+
+.theme-background-transition
+  position fixed
+  inset 0
+  z-index 0
+  pointer-events none
+  background-color var(--theme-background)
+  background-attachment fixed
+  background-position 50% 0
+  background-repeat no-repeat
+  background-size cover
+  opacity 1
+  transition opacity .76s cubic-bezier(.22, 1, .36, 1)
+  &.is-fading
+    opacity 0
+
+html.theme-changing body,
+html.theme-changing body :not(.theme-background-transition)
+  transition-property color, background-color, border-color, box-shadow, text-shadow, fill, stroke !important
+  transition-duration .72s !important
+  transition-timing-function cubic-bezier(.22, 1, .36, 1) !important
+
+@media (prefers-reduced-motion: reduce)
+  .theme-background-transition
+    transition-duration .01ms
+
+  html.theme-changing body,
+  html.theme-changing body :not(.theme-background-transition)
+    transition-duration .01ms !important

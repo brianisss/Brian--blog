@@ -18,42 +18,33 @@ class ColorMode {
 
 
   public change = () => {
+    if (this.inChanging) return
     this.inChanging = true
-    let background = document.createElement('div')
-    background.style.transition = '1.5s'
-    background.innerHTML =
-      `<div style='background: var(--${this.dark ? 'dark' : 'light'}-background);
-        height: 100vh; width: 100vw;
-        position: fixed; left: 0; top: 0; z-index: -99999;
-        background-attachment: fixed;
-        background-position: 50% 0;
-        background-repeat: no-repeat;
-        background-size: cover;'></div>`
-    document.body.insertBefore(background, document.body.firstChild)
     this.btn.style.pointerEvents = 'none'
-    setTimeout(() => {
-      if (canvasDusts) canvasDusts.stop()
-      if (this.dark) {
-        this.html.setAttribute('theme-mode', 'light')
-        this.dark = false
-        window.localStorage['theme-mode'] = 'light'
-      } else {
-        this.html.setAttribute('theme-mode', 'dark')
-        this.dark = true
-        window.localStorage['theme-mode'] = 'dark'
-      }
-      background.style.opacity = '0'
-      code.resetMermaid()
-      this.syncGiscusTheme()
-    })
-    setTimeout(() => {
-      document.body.removeChild(background)
+    const previousTheme = this.dark ? 'dark' : 'light'
+    const nextTheme = this.dark ? 'light' : 'dark'
+    const background = document.createElement('div')
+    background.className = 'theme-background-transition'
+    const currentStyles = getComputedStyle(this.html)
+    background.style.backgroundImage = currentStyles.getPropertyValue(`--${previousTheme}-background`).trim()
+    background.style.backgroundColor = currentStyles.getPropertyValue('--theme-background').trim()
+    document.body.insertBefore(background, document.body.firstChild)
+    this.html.classList.add('theme-changing')
+    this.html.setAttribute('theme-mode', nextTheme)
+    this.dark = nextTheme === 'dark'
+    window.localStorage['theme-mode'] = nextTheme
+    if (canvasDusts) canvasDusts.stop()
+    requestAnimationFrame(() => background.classList.add('is-fading'))
+    code.resetMermaid()
+    this.syncGiscusTheme()
+    const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 760
+    window.setTimeout(() => {
+      background.remove()
+      this.html.classList.remove('theme-changing')
       if (canvasDusts) canvasDusts.play()
-    }, 1500)
-    setTimeout(() => {
       this.btn.style.pointerEvents = ''
       this.inChanging = false
-    }, 1000)
+    }, duration)
   }
 
   constructor() {

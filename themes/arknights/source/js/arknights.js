@@ -678,77 +678,36 @@ class ColorMode {
         }
     };
     change = () => {
+        if (this.inChanging)
+            return;
         this.inChanging = true;
         this.btn.style.pointerEvents = 'none';
-        // 停用粒子，避免干擾
+        const previousTheme = this.dark ? 'dark' : 'light';
+        const nextTheme = this.dark ? 'light' : 'dark';
+        const background = document.createElement('div');
+        background.className = 'theme-background-transition';
+        const currentStyles = getComputedStyle(this.html);
+        background.style.backgroundImage = currentStyles.getPropertyValue(`--${previousTheme}-background`).trim();
+        background.style.backgroundColor = currentStyles.getPropertyValue('--theme-background').trim();
+        document.body.insertBefore(background, document.body.firstChild);
+        this.html.classList.add('theme-changing');
+        this.html.setAttribute('theme-mode', nextTheme);
+        this.dark = nextTheme === 'dark';
+        window.localStorage['theme-mode'] = nextTheme;
         if (canvasDusts)
             canvasDusts.stop();
-        
-        // 決定切換後的目標主題
-        let targetTheme = this.dark ? 'light' : 'dark';
-        
-        // 創建 overlay — 使用目標主題的背景
-        let overlay = document.createElement('div');
-        overlay.style.cssText = `
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -99999;
-            background-attachment: fixed;
-            background-position: 50% 0;
-            background-repeat: no-repeat;
-            background-size: cover;
-            opacity: 1;
-            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        `;
-        // 讀取目標主題的 CSS 變數並設定
-        let computed = getComputedStyle(this.html);
-        let bgImageComputed = computed.getPropertyValue('--' + targetTheme + '-background').trim();
-        let bgColor = computed.getPropertyValue('--theme-background').trim();
-        // 注意：切換後 --theme-background 會變，所以先記錄舊值
-        // 實際上 bgColor 會是舊主題的值，需要手動設定
-        let bgColors = {
-            dark: '#0d1b2a',
-            light: '#eef4fb'
-        };
-        let bgImageDark = 'https://ak.hypergryph.com/assets/index/images/ak/pc/bk.jpg';
-        let bgImageLight = '/img/bk.jpg';
-        let bgImage = targetTheme === 'dark' ? bgImageDark : bgImageLight;
-        overlay.style.backgroundImage = `url("${bgImage}")`;
-        overlay.style.backgroundColor = bgColors[targetTheme];
-        
-        // 插入 body
-        document.body.insertBefore(overlay, document.body.firstChild);
-        
-        // 切換主題模式
-        if (this.dark) {
-            this.html.setAttribute('theme-mode', 'light');
-            this.dark = false;
-            window.localStorage['theme-mode'] = 'light';
-        } else {
-            this.html.setAttribute('theme-mode', 'dark');
-            this.dark = true;
-            window.localStorage['theme-mode'] = 'dark';
-        }
-        
-        // 淡出 overlay
-        requestAnimationFrame(() => {
-            overlay.style.opacity = '0';
-        });
-        
-        // 清理
-        setTimeout(() => {
-            document.body.removeChild(overlay);
+        requestAnimationFrame(() => background.classList.add('is-fading'));
+        code.resetMermaid();
+        this.syncGiscusTheme();
+        const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 760;
+        window.setTimeout(() => {
+            background.remove();
+            this.html.classList.remove('theme-changing');
             if (canvasDusts)
                 canvasDusts.play();
             this.btn.style.pointerEvents = '';
             this.inChanging = false;
-        }, 1300);
-        
-        code.resetMermaid();
-        this.syncGiscusTheme();
+        }, duration);
     };
     constructor() {
         // DOM 載入後初始化按鈕
