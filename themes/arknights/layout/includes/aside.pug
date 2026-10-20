@@ -8,7 +8,13 @@ aside
     h1#Dr
       a(href= theme.aside.dr)= config.author
     #description
-      p!= config.description
+      if config.description === 'Where All Miracles Begin'
+        p.miracle-tagline(aria-label=config.description)
+          span Where
+          span All Miracles
+          span Begin
+      else
+        p!= config.description
     if theme.social
       #social-links
         each value, name in theme.social

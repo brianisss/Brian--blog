@@ -34,7 +34,7 @@
 - `arknights.js`：同步修改
 
 ### 命名
-- `_config.yml`：title=`SCHALE Blog`、subtitle=`未來機關`、description=`與未來機關取得弱神經連線時的口令：`、author=`SCHALE`、language=`zh-TW`
+- `_config.yml`：title=`SCHALE Blog`、subtitle=`未來機關`、description=`Where All Miracles Begin`、author=`SCHALE`、language=`zh-TW`
 - `aside.pug`：Arknights → Blue Archive
 - `404.html`：BA 風格錯誤頁
 
